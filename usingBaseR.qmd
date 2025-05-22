@@ -5,6 +5,10 @@ format: pdf
 editor: visual
 ---
 
+```{r, global_options, include=FALSE}
+knitr::opts_chunk$set(message=FALSE, tidy.opts=list(width.cutoff=60), tidy=TRUE)
+```
+
 ## Task 1: Basic Vector Practice
 
 ### Question 1:
@@ -12,9 +16,11 @@ editor: visual
 Create two vectors named pre and post. One vector corresponding to the pre measurements and one to the post measurements.. Create two vectors named pre and post. One vector corresponding to the pre measurements and one to the post measurements.
 
 ```{r}
-pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127, 141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
+pre <- c(130, 128, 116, 124, 133, 134, 118, 126, 114, 127,
+         141, 138, 128, 140, 137, 131, 120, 128, 139, 135)
 
-post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117, 101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
+post <- c(114, 98, 113, 99, 107, 116, 113, 111, 119, 117,
+          101, 119, 130, 122, 106, 106, 124, 102, 117, 113)
 ```
 
 ### Question 2:
@@ -34,8 +40,8 @@ Calculate the change in blood pressure for each patient.
 
 ```{r}
 # Change in blood pressure
-diff_op <- pre - post
-diff_op
+diff_bp <- pre - post
+diff_bp
 ```
 
 ### Question 4:
@@ -43,7 +49,7 @@ diff_op
 Calculate the average decrease in blood pressure across all patients.
 
 ```{r}
-avg_change_all <- mean(diff_op)
+avg_change_all <- mean(diff_bp)
 
 ```
 
@@ -52,7 +58,7 @@ avg_change_all <- mean(diff_op)
 Determine which patients experienced a decrease in blood pressure after treatment (a positive change). Use the which() function to just return the indices (and names) associated with this type of change.
 
 ```{r}
-index_patients_decreased_bp <- which(diff_op > 0)
+index_patients_decreased_bp <- which(diff_bp > 0)
 
 
 
@@ -63,7 +69,7 @@ index_patients_decreased_bp <- which(diff_op > 0)
 Subset the vector of differences to only return those that have a positive change
 
 ```{r}
-patients_decreased_bp <- diff_op[index_patients_decreased_bp]
+patients_decreased_bp <- diff_bp[index_patients_decreased_bp]
 ```
 
 ### Question 7
@@ -72,11 +78,112 @@ Calculate the average decrease in blood pressure for those where the blood press
 
 ```{r}
 mean_patients_decreased_bp <- mean(patients_decreased_bp)
-paste("The average decrease in blood pressure for those where the blood pressure decreased was: ", mean_patients_decreased_bp)
+paste(mean_patients_decreased_bp)
 ```
 
 ## Task 2: Basic Data Frame Practice
 
+### Question 1
+
+Create a data frame object with four columns corresponding to your data above: patient, pre_bp, post_bp, and diff_bp.
+
 ```{r}
-df <- data.frame("Paiteint" = names, "pre" = pre, "post"=post, "diff_op"=diff_op)
+bp_df <- data.frame("Patient" = names, 
+                    "pre_bp" = pre, 
+                    "post_bp"=post, 
+                    "diff_bp"=diff_bp, 
+                    row.names = NULL)
+```
+
+### Question 2
+
+Return only rows where the diff_bp column is negative.
+
+```{r}
+subset(bp_df, diff_bp < 0)
+```
+
+### Question 3
+
+Add a new column to the data frame corresponding to TRUE if the post_bp is less than 120.
+
+```{r}
+bp_df$post_bp_normal <- ifelse(bp_df$post_bp < 120, TRUE, FALSE)
+```
+
+Let's quickly check our logic worked.
+
+```{r}
+tail(bp_df)
+```
+
+### Question 4
+
+Finally, print the data frame out nicely in your final document by modifying the code below appropriately.
+
+```{r}
+knitr::kable(bp_df)
+```
+
+## List Practice
+
+### Question 1
+
+Create a new data frame with these data that is similar to the data frame from task 2 (including the new column). That is, include a patient, pre, post, diff, and normal (less than 120) column using the data above. Name this new data frame bp_df_placebo.
+
+```{r}
+
+# I'm going to start the patient numbering after the previous names
+names_placebo <- paste("Subject", 21:30, sep="_")
+pre_bp_placebo <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
+post_bp_placebo <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
+
+bp_df_placebo <- data.frame("Patient" = names, 
+                            "pre_bp" = pre_bp_placebo, 
+                            "post_bp"=post_bp_placebo, 
+                            row.names = NULL)
+
+# Let's make the diff_bp column a different way, this time from existing dataframe
+bp_df_placebo$diff_bp <- bp_df_placebo$pre_bp - bp_df_placebo$post_bp
+
+# Normal bp
+bp_df_placebo$post_bp_normal <- ifelse(bp_df_placebo$post_bp < 120, TRUE, FALSE)
+
+head(bp_df_placebo)
+```
+
+### Question 2
+
+Now create and store a list with two elements:
+
+• 1st element named treatment and contains the first data frame you created.
+
+• 2nd element named placebo and contains the second data frame you created.
+
+```{r}
+bp_list <- list("treatment" = bp_df, 
+                "placebo" = bp_df_placebo)
+```
+
+### Question 3
+
+Access the first list element using three different types of syntax.
+
+```{r}
+# By index
+bp_list[1]
+
+# By index in the other direction
+bp_list[-2]
+
+# By name
+bp_list$treatment
+```
+
+### Question 4
+
+In one line, access the placebo data frame, pre_bp column.
+
+```{r}
+bp_list$placebo$pre_bp
 ```
