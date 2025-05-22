@@ -138,7 +138,7 @@ names_placebo <- paste("Subject", 21:30, sep="_")
 pre_bp_placebo <- c(138, 135, 147, 117, 152, 134, 114, 121, 131, 130)
 post_bp_placebo <- c(105, 136, 123, 130, 134, 143, 135, 139, 120, 124)
 
-bp_df_placebo <- data.frame("Patient" = names, 
+bp_df_placebo <- data.frame("Patient" = names_placebo, 
                             "pre_bp" = pre_bp_placebo, 
                             "post_bp"=post_bp_placebo, 
                             row.names = NULL)
@@ -186,4 +186,75 @@ In one line, access the placebo data frame, pre_bp column.
 
 ```{r}
 bp_list$placebo$pre_bp
+```
+
+## Task 4: Control Flow Practice
+
+### Question 1
+
+Classify bp as optimal, borderline, and high.
+
+```{r}
+
+bp_list$treatment$status <- character(20)
+bp_list$placebo$status <- character(10)
+
+```
+
+### Question 2
+
+For the non-placebo data frame (within the list), create a for loop and use if/then/else logic to create
+the status column’s values.
+
+```{r}
+
+for (i in 1:nrow(bp_list$treatment)) {
+  post_bp <- bp_list$treatment[i, "post_bp"]
+  if (post_bp > 130) {
+    bp_list$treatment[i, "status"] <- "high"
+  }
+  else if (post_bp > 120) {
+    bp_list$treatment[i, "status"] <- "borderline"
+  }
+  else {
+    bp_list$treatment[i, "status"] <- "optimal"
+  }
+  
+}
+
+```
+
+### Question 3
+
+Repeat for the placebo dataframe (within the list)
+
+```{r}
+for (i in 1:nrow(bp_list$placebo)) {
+  post_bp <- bp_list$placebo[i, "post_bp"]
+  if (post_bp > 130) {
+    bp_list$placebo[i, "status"] <- "high"
+  }
+  else if (post_bp > 120) {
+    bp_list$placebo[i, "status"] <- "borderline"
+  }
+  else {
+    bp_list$placebo[i, "status"] <- "optimal"
+  }
+  
+}
+```
+
+## Task 5: Function Writing
+
+### Question 1
+
+```{r}
+get_stat <- function(df_list, stat = "mean"){
+  my_func <- get(stat)
+  
+}
+```
+
+```{r}
+get_stat(bp_list)
 ```
