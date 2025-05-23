@@ -203,8 +203,7 @@ bp_list$placebo$status <- character(10)
 
 ### Question 2
 
-For the non-placebo data frame (within the list), create a for loop and use if/then/else logic to create
-the status column’s values.
+For the non-placebo data frame (within the list), create a for loop and use if/then/else logic to create the status column’s values.
 
 ```{r}
 
@@ -222,6 +221,7 @@ for (i in 1:nrow(bp_list$treatment)) {
   
 }
 
+head(bp_list$treatment)
 ```
 
 ### Question 3
@@ -242,6 +242,8 @@ for (i in 1:nrow(bp_list$placebo)) {
   }
   
 }
+
+head(bp_list$placebo)
 ```
 
 ## Task 5: Function Writing
@@ -250,11 +252,58 @@ for (i in 1:nrow(bp_list$placebo)) {
 
 ```{r}
 get_stat <- function(df_list, stat = "mean"){
+
   my_func <- get(stat)
-  
-}
+  cols <- c("post_bp", "pre_bp", "diff_bp")
+  values <- c()
+  names <- c()
+  j <- 1
+  for (i in 1:length(df_list)){
+   
+    for (col in cols){
+      name <- paste( col, "_",names(df_list[i]),"_", stat, sep="")
+      value <- my_func(df_list[[i]][,col])
+      values[j] <- value
+      names [j] <- name
+      j = j + 1
+    }
+    
+  }
+  stats <- values
+  names(stats) <- names
+  return(stats)
+  }
+
+
+
+
+```
+
+Without specifying stat:
+
+```{r}
+result <- get_stat(bp_list)
+knitr::kable(result)
+```
+
+Specifying various stats:
+
+```{r}
+result <- get_stat(bp_list, "var")
+knitr::kable(result)
 ```
 
 ```{r}
-get_stat(bp_list)
+result <- get_stat(bp_list, "sd")
+knitr::kable(result)
+```
+
+```{r}
+result <- get_stat(bp_list, "max")
+knitr::kable(result)
+```
+
+```{r}
+result <- get_stat(bp_list, "min")
+knitr::kable(result)
 ```
